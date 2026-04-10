@@ -6,10 +6,10 @@
                 <nav class="mt-3">
                     <a href="/casahogar/index.php"><i class="fas fa-home me-2"></i> Dashboard</a>
                     <a href="/casahogar/modulos/pacientes/index.php"><i class="fas fa-user-injured me-2"></i> Pacientes</a>
-                    <a href="#"><i class="fas fa-user-md me-2"></i> Personal</a>
-                    <a href="#"><i class="fas fa-calendar-alt me-2"></i> Turnos</a>
-                    <a href="#"><i class="fas fa-file-invoice-dollar me-2"></i> Facturación</a>
-                    <a href="#"><i class="fas fa-chart-line me-2"></i> Ingresos/Egresos</a>
+                    <a href="/casahogar/modulos/personal/index.php"><i class="fas fa-user-md me-2"></i> Personal</a>
+                    <a href="/casahogar/modulos/turnos/index.php"><i class="fas fa-calendar-alt me-2"></i> Turnos</a>
+                    <a href="/casahogar/modulos/facturacion/index.php"><i class="fas fa-file-invoice-dollar me-2"></i> Facturación</a>
+                    <a href="/casahogar/modulos/finanzas/index.php"><i class="fas fa-chart-line me-2"></i> Ingresos/Egresos</a>
                     <a href="#"><i class="fas fa-bullhorn me-2"></i> Marketing</a>
                     <?php if($_SESSION['nombre_rol'] == 'Administrador'): ?>
                     <div class="border-top border-secondary mt-2 pt-2">
