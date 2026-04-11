@@ -3,16 +3,16 @@ require_once '../../config/database.php';
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 
-// 1. INICIALIZAR LA CONEXIÓN
+// Inicializar la conexión
 $db = (new Database())->getConnection();
 
-// 2. Calculamos el próximo correlativo para mostrarlo en el modal
+// Calcular el próximo correlativo para mostrarlo en el modal
 $stmt_corr = $db->query("SELECT MAX(CAST(correlativo AS UNSIGNED)) as max_corr FROM facturas WHERE serie = 'F001'");
 $row_corr = $stmt_corr->fetch();
 $max_corr = isset($row_corr['max_corr']) ? intval($row_corr['max_corr']) : 0;
 $proximo_correlativo = str_pad(($max_corr + 1), 7, "0", STR_PAD_LEFT);
 
-// 3. Obtenemos los datos necesarios para la vista
+// Obtener los datos necesarios para la vista
 $facturas = $db->query("SELECT f.*, p.nombres, p.apellidos FROM facturas f JOIN pacientes p ON f.id_paciente = p.id_paciente WHERE f.estado = 1 ORDER BY f.fecha_emision DESC")->fetchAll();
 $pacientes = $db->query("SELECT id_paciente, nombres, apellidos FROM pacientes WHERE estado = 1")->fetchAll();
 $servicios = $db->query("SELECT * FROM servicios WHERE estado = 1")->fetchAll();
@@ -34,39 +34,41 @@ $servicios = $db->query("SELECT * FROM servicios WHERE estado = 1")->fetchAll();
 
 <div class="card shadow-sm mb-4">
     <div class="card-body">
-        <table class="table table-striped align-middle">
-            <thead>
-                <tr>
-                    <th>Nro Factura</th>
-                    <th>Paciente</th>
-                    <th>Fecha Emisión</th>
-                    <th>Total</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach($facturas as $f): ?>
-                <tr>
-                    <td><strong><?php echo $f['serie'] . '-' . $f['correlativo']; ?></strong></td>
-                    <td><?php echo htmlspecialchars($f['apellidos'] . ', ' . $f['nombres']); ?></td>
-                    <td><?php echo date('d/m/Y', strtotime($f['fecha_emision'])); ?></td>
-                    <td class="text-success fw-bold">S/ <?php echo number_format($f['total'], 2); ?></td>
-                    <td><span class="badge bg-success">Pagado</span></td>
-                    <td>
-                        <a href="anular.php?id=<?php echo $f['id_factura']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Está seguro de anular esta factura? Esto también extornará el ingreso de caja pero mantendrá el historial.');">
-                            <i class="fas fa-ban"></i> Anular
-                        </a>
-                    </td>
-                </tr>
-                <?php endforeach; ?>
-                <?php if(empty($facturas)): ?>
-                <tr>
-                    <td colspan="6" class="text-center text-muted">No hay facturas emitidas.</td>
-                </tr>
-                <?php endif; ?>
-            </tbody>
-        </table>
+        <div class="table-responsive">
+            <table class="table table-striped align-middle">
+                <thead>
+                    <tr>
+                        <th>Nro Factura</th>
+                        <th>Paciente</th>
+                        <th>Fecha Emisión</th>
+                        <th>Total</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach($facturas as $f): ?>
+                    <tr>
+                        <td><strong><?php echo htmlspecialchars($f['serie'] . '-' . $f['correlativo']); ?></strong></td>
+                        <td><?php echo htmlspecialchars($f['apellidos'] . ', ' . $f['nombres']); ?></td>
+                        <td><?php echo date('d/m/Y', strtotime($f['fecha_emision'])); ?></td>
+                        <td class="text-success fw-bold">S/ <?php echo number_format($f['total'], 2); ?></td>
+                        <td><span class="badge bg-success">Pagado</span></td>
+                        <td>
+                            <a href="anular.php?id=<?php echo $f['id_factura']; ?>" class="btn btn-sm btn-outline-danger" onclick="return confirm('¿Está seguro de anular esta factura? Esto también extornará el ingreso de caja.');">
+                                <i class="fas fa-ban"></i> Anular
+                            </a>
+                        </td>
+                    </tr>
+                    <?php endforeach; ?>
+                    <?php if(empty($facturas)): ?>
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">No hay facturas emitidas activas.</td>
+                    </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -79,7 +81,7 @@ $servicios = $db->query("SELECT * FROM servicios WHERE estado = 1")->fetchAll();
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
-                    <div class="row mb-3 bg-light p-3 rounded">
+                    <div class="row mb-3 bg-light p-3 rounded mx-1">
                         <div class="col-md-4">
                             <label class="form-label fw-bold">Paciente / Residente</label>
                             <select name="id_paciente" class="form-select" required>
@@ -177,15 +179,12 @@ function agregarServicio() {
             </button>
         </div>
     `;
-    
     contenedor.appendChild(fila);
 }
 
-// Función para autocompletar el precio cuando se selecciona un servicio
 function actualizarPrecio(selectElement) {
     const precio = selectElement.options[selectElement.selectedIndex].getAttribute('data-precio');
     const inputPrecio = selectElement.closest('.item-servicio').querySelector('.precio-input');
-    
     if (precio) {
         inputPrecio.value = precio;
     }

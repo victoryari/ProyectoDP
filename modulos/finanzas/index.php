@@ -5,7 +5,7 @@ require_once '../../includes/sidebar.php';
 
 $db = (new Database())->getConnection();
 
-// Consulta combinada de Ingresos y Egresos para el reporte
+// Consulta combinada de Ingresos y Egresos activos (estado = 1)
 $movimientos = $db->query("
     (SELECT 'Ingreso' as tipo, concepto, monto, fecha_ingreso as fecha FROM ingresos WHERE estado = 1)
     UNION ALL
@@ -13,7 +13,6 @@ $movimientos = $db->query("
     ORDER BY fecha DESC
 ")->fetchAll();
 
-// Calcular totales para los indicadores visuales
 $total_ingresos = 0;
 $total_egresos = 0;
 
@@ -101,7 +100,7 @@ $saldo_actual = $total_ingresos - $total_egresos;
                     
                     <?php if(empty($movimientos)): ?>
                     <tr>
-                        <td colspan="4" class="text-center text-muted py-3">No hay movimientos registrados en caja.</td>
+                        <td colspan="4" class="text-center text-muted py-4">No hay movimientos registrados en caja.</td>
                     </tr>
                     <?php endif; ?>
                 </tbody>
@@ -121,7 +120,7 @@ $saldo_actual = $total_ingresos - $total_egresos;
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Concepto / Detalle del Gasto</label>
-                        <input type="text" name="concepto" class="form-control" required placeholder="Ej: Pago de luz mensual, Compra de pañales...">
+                        <input type="text" name="concepto" class="form-control" required placeholder="Ej: Pago de luz mensual...">
                     </div>
                     <div class="row g-3 mb-3">
                         <div class="col-md-6">
