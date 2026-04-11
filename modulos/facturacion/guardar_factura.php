@@ -84,7 +84,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         ]);
 
         $db->commit();
-        header("Location: index.php?msg=success");
+        // Redirigimos pasando el ID de la factura generada para lanzar el popup de impresión
+header("Location: index.php?msg=success&print_id=" . $id_factura);
         exit;
 
     } catch (Throwable $e) {
