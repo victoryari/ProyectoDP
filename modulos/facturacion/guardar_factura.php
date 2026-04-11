@@ -2,7 +2,13 @@
 session_start();
 require_once '../../config/database.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    
+    // Verificamos explícitamente que la sesión no haya expirado
+    if (!isset($_SESSION['usuario_id'])) {
+        die("Error: Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
+    }
+
     $database = new Database();
     $db = $database->getConnection();
 
@@ -20,16 +26,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
         $cantidades = $_POST['cantidad'];
         $precios = $_POST['precio'];
 
-        // 1. Generar Correlativo Automático (Ej: 0000001)
+        // 1. Generar Correlativo Automático Seguro (Manejo de tabla vacía)
         $stmt_corr = $db->query("SELECT MAX(CAST(correlativo AS UNSIGNED)) as max_corr FROM facturas WHERE serie = '$serie'");
         $row_corr = $stmt_corr->fetch();
-        $correlativo = str_pad(($row_corr['max_corr'] + 1), 7, "0", STR_PAD_LEFT);
+        $max_corr = isset($row_corr['max_corr']) ? intval($row_corr['max_corr']) : 0;
+        $correlativo = str_pad(($max_corr + 1), 7, "0", STR_PAD_LEFT);
 
-        // Calcular Totales
+        // Calcular Totales con validación para evitar errores fatales (TypeError)
         $subtotal_general = 0;
         foreach ($precios as $index => $precio) {
-            $subtotal_general += ($precio * $cantidades[$index]);
+            $p = is_numeric($precio) ? floatval($precio) : 0;
+            $c = is_numeric($cantidades[$index]) ? floatval($cantidades[$index]) : 1;
+            $subtotal_general += ($p * $c);
         }
+        
+        if ($subtotal_general <= 0) {
+            throw new Exception("El total de la factura debe ser mayor a 0. Verifica los precios de los servicios.");
+        }
+
         $impuestos = 0; // Si aplicara IGV, sería $subtotal_general * 0.18
         $total = $subtotal_general + $impuestos;
 
@@ -51,33 +65,40 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
         $stmt_det = $db->prepare($query_det);
 
         foreach ($servicios as $index => $id_servicio) {
-            $cantidad = $cantidades[$index];
-            $precio = $precios[$index];
-            $subtotal_linea = $cantidad * $precio;
+            $p = is_numeric($precios[$index]) ? floatval($precios[$index]) : 0;
+            $c = is_numeric($cantidades[$index]) ? floatval($cantidades[$index]) : 1;
+            $subtotal_linea = $c * $p;
 
             $stmt_det->execute([
                 ':id_factura' => $id_factura, ':id_servicio' => $id_servicio, 
-                ':cantidad' => $cantidad, ':precio' => $precio, ':subtotal' => $subtotal_linea
+                ':cantidad' => $c, ':precio' => $p, ':subtotal' => $subtotal_linea
             ]);
         }
 
         // 4. Registrar Automáticamente el Ingreso en Finanzas
         $concepto_ingreso = "Pago Factura " . $serie . "-" . $correlativo;
+        // Evitamos errores de formato en el campo DATETIME agregando la hora actual
+        $fecha_hora = $fecha . " " . date('H:i:s'); 
         $query_ingreso = "INSERT INTO ingresos (id_factura, id_usuario_registro, concepto, monto, metodo_pago, fecha_ingreso, estado) 
-                          VALUES (:id_factura, :id_usuario, :concepto, :monto, 'Efectivo', :fecha, 1)";
+                          VALUES (:id_factura, :id_usuario, :concepto, :monto, 'Efectivo', :fecha_hora, 1)";
         $stmt_ing = $db->prepare($query_ingreso);
         $stmt_ing->execute([
             ':id_factura' => $id_factura, ':id_usuario' => $id_usuario, 
-            ':concepto' => $concepto_ingreso, ':monto' => $total, ':fecha' => $fecha
+            ':concepto' => $concepto_ingreso, ':monto' => $total, ':fecha_hora' => $fecha_hora
         ]);
 
         // Confirmar Transacción
         $db->commit();
         header("Location: index.php?msg=success");
+        exit;
 
-    } catch (Exception $e) {
+    } catch (Throwable $e) { // Throwable captura tanto Exceptions como Errores de Tipo de PHP
         $db->rollBack(); // Revertir todo si hay error
-        die("Error al guardar: " . $e->getMessage());
+        die("<div style='color:red; font-family:sans-serif; padding:20px;'><h3>Error al procesar la factura:</h3><p>" . $e->getMessage() . "</p><a href='index.php'>Volver al módulo</a></div>");
     }
+} else {
+    // Si acceden directamente al archivo sin POST
+    header("Location: index.php");
+    exit;
 }
 ?>

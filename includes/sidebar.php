@@ -10,11 +10,13 @@
                     <a href="/casahogar/modulos/turnos/index.php"><i class="fas fa-calendar-alt me-2"></i> Turnos</a>
                     <a href="/casahogar/modulos/facturacion/index.php"><i class="fas fa-file-invoice-dollar me-2"></i> Facturación</a>
                     <a href="/casahogar/modulos/finanzas/index.php"><i class="fas fa-chart-line me-2"></i> Ingresos/Egresos</a>
-                    <a href="#"><i class="fas fa-bullhorn me-2"></i> Marketing</a>
+                    <a href="/casahogar/modulos/marketing/index.php"><i class="fas fa-bullhorn me-2"></i> Marketing</a>
                     <?php if($_SESSION['nombre_rol'] == 'Administrador'): ?>
                     <div class="border-top border-secondary mt-2 pt-2">
                         <small class="px-3 text-muted text-uppercase">Configuración</small>
                         <a href="/casahogar/modulos/usuarios/index.php"><i class="fas fa-users-cog me-2"></i> Gestión de Usuarios</a>
+                        <a href="/casahogar/modulos/configuracion/index.php"><i class="fas fa-users-cog me-2"></i> Configuracion</a>
+                        <a href="/casahogar/modulos/Servicios/index.php"><i class="fas fa-users-cog me-2"></i> Servicios</a>
                     </div>
                     <?php endif; ?>
                 </nav>
