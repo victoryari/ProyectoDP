@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
 
     $query = "INSERT INTO servicios (codigo_servicio, nombre_servicio, descripcion, precio_referencial, estado) 
               VALUES (:codigo, :nombre, :desc, :precio, 1)";

@@ -6,7 +6,7 @@ if (!isset($_GET['id']) || $_SESSION['nombre_rol'] == 'Especialista') {
     die("Acceso denegado o comprobante no encontrado.");
 }
 
-$db = (new Database())->getConnection();
+$db = (new database())->getConnection();
 $id_factura = intval($_GET['id']);
 
 // 1. Obtener datos de la empresa

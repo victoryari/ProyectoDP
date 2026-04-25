@@ -3,7 +3,7 @@ require_once '../../config/database.php';
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 
-$database = new Database();
+$database = new database();
 $db = $database->getConnection();
 $rol = $_SESSION['nombre_rol'];
 

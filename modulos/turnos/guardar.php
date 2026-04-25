@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     $query = "INSERT INTO asignacion_turnos (id_personal, id_usuario_asigno, fecha_turno, hora_inicio, hora_fin, estado) 

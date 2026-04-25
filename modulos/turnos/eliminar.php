@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if (isset($_GET['id'])) {
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     // Cambiamos el estado a 0 para cancelar el turno sin borrar el registro histórico

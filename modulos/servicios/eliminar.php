@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if (isset($_GET['id'])) {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
     $stmt = $db->prepare("UPDATE servicios SET estado = 0 WHERE id_servicio = :id");
     $stmt->execute([':id' => $_GET['id']]);
 }

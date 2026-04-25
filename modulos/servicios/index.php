@@ -3,7 +3,7 @@ require_once '../../config/database.php';
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 
-$db = (new Database())->getConnection();
+$db = (new database())->getConnection();
 $servicios = $db->query("SELECT * FROM servicios WHERE estado = 1 ORDER BY nombre_servicio ASC")->fetchAll();
 ?>
 

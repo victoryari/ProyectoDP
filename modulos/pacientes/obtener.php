@@ -4,7 +4,7 @@ require_once '../../config/database.php';
 
 // Validamos que exista el ID en la petición
 if (isset($_GET['id'])) {
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     $query = "SELECT * FROM pacientes WHERE id_paciente = :id AND estado = 1";

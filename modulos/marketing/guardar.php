@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
     $query = "INSERT INTO prospectos_marketing (nombre_contacto, telefono, correo, medio_contacto, interes_mostrado, estado_seguimiento, estado) 
               VALUES (:nombre, :tel, :correo, :medio, :interes, :seguimiento, 1)";
     $stmt = $db->prepare($query);

@@ -7,7 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         die("Error: Tu sesión ha expirado. Por favor, vuelve a iniciar sesión.");
     }
 
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     try {

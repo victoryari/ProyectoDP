@@ -3,7 +3,7 @@ require_once '../../config/database.php';
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 
-$db = (new Database())->getConnection();
+$db = (new database())->getConnection();
 $prospectos = $db->query("SELECT * FROM prospectos_marketing WHERE estado = 1 ORDER BY fecha_registro DESC")->fetchAll();
 ?>
 

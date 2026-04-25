@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && !empty($_POST['id_servicio'])) {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
 
     $query = "UPDATE servicios SET 
                 codigo_servicio = :codigo, 

@@ -3,7 +3,7 @@ require_once '../../config/database.php';
 require_once '../../includes/header.php';
 require_once '../../includes/sidebar.php';
 
-$db = (new Database())->getConnection();
+$db = (new database())->getConnection();
 
 // Consulta combinada de Ingresos y Egresos activos (estado = 1)
 $movimientos = $db->query("

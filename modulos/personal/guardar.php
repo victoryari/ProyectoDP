@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     $query = "INSERT INTO personal (nombres, apellidos, tipo_documento, numero_documento, cargo, modalidad_contrato, telefono, estado) 

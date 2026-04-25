@@ -2,7 +2,7 @@
 require_once '../../config/database.php';
 
 if (isset($_GET['id'])) {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
     $stmt = $db->prepare("SELECT * FROM servicios WHERE id_servicio = :id AND estado = 1");
     $stmt->execute([':id' => $_GET['id']]);
     

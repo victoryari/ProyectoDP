@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if (isset($_GET['id'])) {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
     $id = intval($_GET['id']);
     
     // Anulamos (soft delete) cabecera, detalle e ingreso en caja

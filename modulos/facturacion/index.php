@@ -8,7 +8,7 @@ if($_SESSION['nombre_rol'] == 'Especialista') {
     exit;
 }
 
-$db = (new Database())->getConnection();
+$db = (new database())->getConnection();
 
 $stmt_corr = $db->query("SELECT MAX(CAST(correlativo AS UNSIGNED)) as max_corr FROM facturas WHERE serie = 'F001'");
 $row_corr = $stmt_corr->fetch();

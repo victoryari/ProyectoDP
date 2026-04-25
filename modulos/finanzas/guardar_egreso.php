@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_SESSION['usuario_id'])) {
-    $db = (new Database())->getConnection();
+    $db = (new database())->getConnection();
 
     $query = "INSERT INTO egresos (id_usuario_registro, concepto, categoria, monto, metodo_pago, comprobante_referencia, fecha_egreso, estado) 
               VALUES (:id_usuario, :concepto, :categoria, :monto, :metodo_pago, :comprobante, :fecha, 1)";

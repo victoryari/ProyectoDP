@@ -3,7 +3,7 @@ session_start();
 require_once '../../config/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['id_paciente'])) {
-    $database = new Database();
+    $database = new database();
     $db = $database->getConnection();
 
     $query = "UPDATE pacientes SET 
